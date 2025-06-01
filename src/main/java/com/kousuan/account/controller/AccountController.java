@@ -42,5 +42,4 @@ public class AccountController {
         String password = params.get("password");
         return accountService.login(username,password);
     }
-
 }

@@ -7,31 +7,33 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
+
 @Data
-@TableName("system_settings")
+@TableName("account_news")
 @Accessors(chain = true)
-public class SystemSettingsEntity {
+public class MessageEntity {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
     @TableField("userId")
     private Integer userId;
 
-    @TableField("soundSwitch")
-    private Boolean soundSwitch;
+    @TableField("title")
+    private String title;
 
-    @TableField("shockSwitch")
-    private Boolean shockSwitch;
+    @TableField("content")
+    private String content;
 
-    @TableField("warnSwitch")
-    private Boolean warnSwitch;
+    @TableField("sendTime")
+    private Date sendTime;
 
-    @TableField("answerTime")
-    private Integer answerTime;
+    @TableField("isRead")
+    private Integer isRead;
 
-    @TableField("questionNums")
-    private Integer questionNums;
+    @TableField("type")
+    private String type;
 
-    @TableField("level")
-    private String level;
+    @TableField("isHidden")
+    private Integer isHidden;
 }
