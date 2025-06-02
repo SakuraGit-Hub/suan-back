@@ -1,20 +1,13 @@
 package com.kousuan.account.controller;
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.kousuan.account.entity.AccountEntity;
 import com.kousuan.account.entity.dto.AccountEditDto;
 import com.kousuan.account.mapper.AccountMapper;
 import com.kousuan.account.service.IAccountEditService;
 import com.kousuan.common.util.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/account")
