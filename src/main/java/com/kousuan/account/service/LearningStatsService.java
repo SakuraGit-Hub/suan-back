@@ -2,8 +2,8 @@ package com.kousuan.account.service;
 
 import com.kousuan.account.entity.CheckedDaysEntity;
 import com.kousuan.account.entity.dto.LearningStatsDTO;
-import com.kousuan.account.mapper.LoginDayMapper;
-import com.kousuan.account.mapper.PracticeContentMapper;
+import com.kousuan.account.mapper.CheckedDaysMapper;
+import com.kousuan.account.mapper.PracticeHistoryMapper;
 import com.kousuan.common.util.Result;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -16,22 +16,22 @@ import java.util.Map;
 @Service
 public class LearningStatsService implements ILearningStatsService{
     @Resource
-    private PracticeContentMapper practiceContentMapper;
+    private PracticeHistoryMapper practiceHistoryMapper;
 
     @Resource
-    private LoginDayMapper loginDayMapper;
+    private CheckedDaysMapper checkedDaysMapper;
 
     @Override
     public Result<LearningStatsDTO> getUserStats(Integer userId) {
         try {
             LearningStatsDTO statsDTO = new LearningStatsDTO();
 
-            // 修正：统计练习记录行数（而不是题目数量总和）
-            Integer practiceCount = practiceContentMapper.countByUserId(userId);
+            // 统计练习记录总数
+            Integer practiceCount = practiceHistoryMapper.countByUserId(userId);
             statsDTO.setCumulativePractice(practiceCount != null ? practiceCount : 0);
 
             // 计算正确率
-            Map<String, Object> result = practiceContentMapper.sumCorrectAndTotalNums(userId);
+            Map<String, Object> result = practiceHistoryMapper.sumCorrectAndTotalNums(userId);
             if (result != null && !result.isEmpty()) {
                 BigDecimal correctNumsBD = (BigDecimal) result.get("totalCorrectNums");
                 BigDecimal totalNumsBD = (BigDecimal) result.get("totalQuestionNums");
@@ -63,9 +63,12 @@ public class LearningStatsService implements ILearningStatsService{
 
         while (currentDate != null) {
             String month = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM"));
-            CheckedDaysEntity record = loginDayMapper.getByUserIdAndMonth(userId, month);
+            CheckedDaysEntity record = checkedDaysMapper.getByUserIdAndMonth(userId, month);
+
+            // 跳过无记录的月份，继续检查上月
             if (record == null || record.getCheckedDays() == null) {
-                break;
+                currentDate = currentDate.minusMonths(1);
+                continue; // 跳过，不中断
             }
 
             String days = record.getCheckedDays();
@@ -76,14 +79,17 @@ public class LearningStatsService implements ILearningStatsService{
             int maxDay = currentDate.lengthOfMonth();
             int startDay = (currentDate.equals(today)) ? today.getDayOfMonth() : maxDay;
             boolean isContinuous = true;
+            int currentMonthCount = 0;
 
             for (int i = startDay - 1; i >= 0; i--) {
                 if (days.charAt(i) != '1') {
                     isContinuous = false;
                     break;
                 }
-                continuousCount++;
+                currentMonthCount++;
             }
+
+            continuousCount += currentMonthCount;
 
             if (!isContinuous) {
                 break;
