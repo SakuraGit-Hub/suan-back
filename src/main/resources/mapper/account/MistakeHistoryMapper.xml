@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kousuan.account.mapper.MistakeHistoryMapper">
+
+    <!-- 批量插入或更新错题记录 -->
+    <insert id="batchInsertOrUpdate">
+        INSERT INTO mistakes_history
+        (userId, question, userAnswer, successAnswer, dateTime, analyse, type, errorNums)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.userId},
+            #{item.question},
+            #{item.userAnswer},
+            #{item.successAnswer},
+            #{item.dateTime},
+            #{item.analyse},
+            #{item.type},
+            #{item.errorNums}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        errorNums = errorNums + VALUES(errorNums),
+        userAnswer = VALUES(userAnswer),
+        successAnswer = VALUES(successAnswer),
+        dateTime = VALUES(dateTime),
+        analyse = VALUES(analyse),
+        type = VALUES(type)
+    </insert>
+
+</mapper>

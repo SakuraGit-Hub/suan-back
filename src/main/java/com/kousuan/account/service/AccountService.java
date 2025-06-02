@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 @Service
 @RequiredArgsConstructor
 public class AccountService implements IAccountService{
-
     private final AccountMapper accountMapper;
     private final JwtUtil jwtUtil;
 

@@ -24,7 +24,7 @@ public class AccountController {
      * @param params 包含username和password的Map
      * @return 注册结果
      */
-    @PostMapping("/register")
+        @PostMapping("/register")
     public Result<String> register(@RequestBody Map<String,String> params) {
         String username = params.get("username");
         String password = params.get("password");

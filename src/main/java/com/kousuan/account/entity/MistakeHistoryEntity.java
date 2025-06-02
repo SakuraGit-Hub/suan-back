@@ -19,9 +19,8 @@ import org.springframework.web.servlet.tags.EditorAwareTag;
 @TableName("mistakes_history")
 @Accessors(chain = true)
 public class MistakeHistoryEntity {
-
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private int  id;
 
     @TableField("userId")
     private Integer userId;
@@ -45,6 +44,7 @@ public class MistakeHistoryEntity {
     private String type;
 
     @TableField("errorNums")
-    private Integer errorNums;
+    private int errorNums;
+
 
 }
